@@ -1,21 +1,23 @@
 function SpellNumber(MyNumber) {
-    var Dollars = "",
-        Cents = "",
-        Temp;
-    var DecimalPlace = "",
-        Count;
-    var Place = new Array(5);
-    Place[0] = "";
-    Place[1] = " тисяча ";
-    Place[2] = " мільйон ";
-    Place[3] = " мільярд ";
-    Place[4] = " трильйон ";
+  var Dollars = "", Cents = "", Temp, left, rigth;
+  var DecimalPlace = "", Count;
+  var Place = new Array(5);
+
+  Place[0] = "";
+  Place[1] = " тисяча ";
+  Place[2] = " мільйон ";
+  Place[3] = " мільярд ";
+  Place[4] = " трильйон ";
+
     // String representation of amount.
     MyNumber = Math.round(MyNumber * 100) / 100;
+    left = MyNumber.toString().substr(0, InStr(MyNumber, "."))
+    rigth = MyNumber.toString().substr(InStr(MyNumber, ".")+1, MyNumber.length)
+
     DecimalPlace = InStr(MyNumber, ".")
     if (DecimalPlace > 0) {
-        Cents = Right(MyNumber, DecimalPlace - 2).trim();
-        MyNumber = Left(MyNumber, DecimalPlace).trim();
+      Cents = Right(MyNumber, DecimalPlace - 2).trim();
+      MyNumber = Left(MyNumber, DecimalPlace).trim();
     }
     Count = 0;
     do {
@@ -119,7 +121,7 @@ function GetTens(TensText) {
             Result = "п'ятдесят ";
             break;
         case 6:
-            Result = "шістресят ";
+            Result = "шістдесят ";
             break;
         case 7:
             Result = "сімдесят ";
