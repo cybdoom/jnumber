@@ -20,27 +20,31 @@ function number_to_string(_number) {
                 switch (_desc){
                         case 0:
                                 var _last_num = parseFloat(_num.substr(-1));
-                                if (_last_num == 1) _string += 'доллар США';
+                                if (_num >= 10 && _num <= 20) _string += 'долларів США';
+                                else if (_last_num == 1) _string += 'доллар США';
                                 else if (_last_num > 1 && _last_num < 5) _string += 'доллари США';
                                 else _string += 'долларів США';
                                 break;
                         case 1:
                                 var _last_num = parseFloat(_num.substr(-1));
-                                if (_last_num == 1) _string += 'тисяча ';
-                                else if (_last_num > 1 && _last_num < 5) _string += 'тысячи ';
+                                if (_num >= 10 && _num <= 20) _string += 'тисяч ';
+                                else if (_last_num == 1) _string += 'тисяча ';
+                                else if (_last_num > 1 && _last_num < 5) _string += 'тисячі ';
                                 else _string += 'тисяч ';
                                 _string = _string.replace('один ', 'одна ');
                                 _string = _string.replace('два ', 'дві ');
                                 break;
                         case 2:
                                 var _last_num = parseFloat(_num.substr(-1));
-                                if (_last_num == 1) _string += 'мільйон ';
+                                if (_num >= 10 && _num <= 20) _string += 'мільйонів ';
+                                else if (_last_num == 1) _string += 'мільйон ';
                                 else if (_last_num > 1 && _last_num < 5) _string += 'миллиона ';
                                 else _string += 'мільйонів ';
                                 break;
                         case 3:
                                 var _last_num = parseFloat(_num.substr(-1));
-                                if (_last_num == 1) _string += 'мільярд ';
+                                if (_num >= 10 && _num <= 20) _string += 'мільярдів ';
+                                else if (_last_num == 1) _string += 'мільярд ';
                                 else if (_last_num > 1 && _last_num < 5) _string += 'миллиарда ';
                                 else _string += 'мільярдів ';
                                 break;
@@ -52,7 +56,8 @@ function number_to_string(_number) {
                 var _first_num = _num.substr(0, 1);
                 var _second_num = parseFloat(_num.substr(1, 2));
                 var _string = ' ' + _first_num + _second_num;
-                if (_second_num == 1) _string += ' цент';
+                if (_num >= 10 && _num <= 20) _string += ' центів';
+                else if (_second_num == 1) _string += ' цент';
                 else if (_second_num > 1 && _second_num < 5) _string += ' центи';
                 else _string += ' центів';
                 return _string;
