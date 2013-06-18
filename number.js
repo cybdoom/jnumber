@@ -1,187 +1,87 @@
-function SpellNumber(MyNumber) {
-  var Dollars = "", Cents = "", Temp, left, rigth;
-  var DecimalPlace = "", Count;
-  var Place = new Array(5);
-
-  Place[0] = "";
-  Place[1] = " тисяча ";
-  Place[2] = " мільйон ";
-  Place[3] = " мільярд ";
-  Place[4] = " трильйон ";
-
-    // String representation of amount.
-    MyNumber = Math.round(MyNumber * 100) / 100;
-    left = MyNumber.toString().substr(0, InStr(MyNumber, "."))
-    rigth = MyNumber.toString().substr(InStr(MyNumber, ".")+1, MyNumber.length)
-
-    DecimalPlace = InStr(MyNumber, ".")
-    if (DecimalPlace > 0) {
-      Cents = Right(MyNumber, DecimalPlace - 2).trim();
-      MyNumber = Left(MyNumber, DecimalPlace).trim();
-    }
-    Count = 0;
-    do {
-        Temp = GetHundreds(Right(MyNumber, 3));
-        if (Temp != "") Dollars = Temp + Place[Count] + Dollars;
-        if (MyNumber.toString().length > 3) {
-            MyNumber = Left(MyNumber, MyNumber.toString().length - 3);
-        } else {
-            MyNumber = "";
+function number_to_string(_number) {
+        var _arr_numbers = new Array();
+        _arr_numbers[1] = new Array('', 'один', 'два', 'три', 'чотири', 'п\'ять', 'шість', 'сім', 'вісім', 'дев\'ять', 'десять', 'одинадцять', 'дванадцять', 'тринадцять', 'чотирнадцать', 'п\'ятнадцать', 'шіснадцать', 'сімнадцать', 'вісімнадцать', 'дев\'ятнадцать');
+        _arr_numbers[2] = new Array('', '', 'двадцять', 'тридцять', 'сорок', 'п\'ятдесят', 'шістдесят', 'сімдесят', 'вісімдесят', 'дев\'яносто');
+        _arr_numbers[3] = new Array('', 'сто', 'двісті', 'триста', 'чотириста', 'п\'ятсот', 'шістсот', 'сімсот', 'вісімсот', 'дев\'ятсот');
+        function number_parser(_num, _desc) {
+                var _string = '';
+                var _num_hundred = '';
+                if (_num.length == 3) {
+                        _num_hundred = _num.substr(0, 1);
+                        _num = _num.substr(1, 3);
+                        _string = _arr_numbers[3][_num_hundred] + ' ';
+                }
+                if (_num < 20) _string += _arr_numbers[1][parseFloat(_num)] + ' ';
+                else {
+                        var _first_num = _num.substr(0, 1);
+                        var _second_num = _num.substr(1, 2);
+                        _string += _arr_numbers[2][_first_num] + ' ' + _arr_numbers[1][_second_num] + ' ';
+                }
+                switch (_desc){
+                        case 0:
+                                var _last_num = parseFloat(_num.substr(-1));
+                                if (_last_num == 1) _string += 'доллар США';
+                                else if (_last_num > 1 && _last_num < 5) _string += 'доллари США';
+                                else _string += 'долларів США';
+                                break;
+                        case 1:
+                                var _last_num = parseFloat(_num.substr(-1));
+                                if (_last_num == 1) _string += 'тисяча ';
+                                else if (_last_num > 1 && _last_num < 5) _string += 'тысячи ';
+                                else _string += 'тисяч ';
+                                _string = _string.replace('один ', 'одна ');
+                                _string = _string.replace('два ', 'дві ');
+                                break;
+                        case 2:
+                                var _last_num = parseFloat(_num.substr(-1));
+                                if (_last_num == 1) _string += 'мільйон ';
+                                else if (_last_num > 1 && _last_num < 5) _string += 'миллиона ';
+                                else _string += 'мільйонів ';
+                                break;
+                        case 3:
+                                var _last_num = parseFloat(_num.substr(-1));
+                                if (_last_num == 1) _string += 'мільярд ';
+                                else if (_last_num > 1 && _last_num < 5) _string += 'миллиарда ';
+                                else _string += 'мільярдів ';
+                                break;
+                }
+                _string = _string.replace('  ', ' ');
+                return _string;
         }
-        Count++;
-    }
-    while (MyNumber != "");
-    switch (Dollars) {
-    case "":
-        Dollars = "нуль гривень";
-        break;
-    case "One":
-        Dollars = "одна гривня";
-        break;
-    default:
-        Dollars = Dollars + " гривень";
-        break;
-    }
-    Cents = " і " + Cents + " копійок";
-    return "(" + capitaliseFirstLetter(Dollars) + Cents + ")";
-}
-function capitaliseFirstLetter(string)
-{
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-function GetHundreds(MyNumber) {
-    MyNumber = parseInt(MyNumber);
-    var Result = "";
-    if (MyNumber == 0) return "нуль";
-    var strMyNumber = "000" + MyNumber.toString();
-    strMyNumber = Right(strMyNumber, 3);
-    // Convert the hundreds place.
-    if (MidStr(strMyNumber, 0, 1) != "0") {
-        Result = GetDigit(MidStr(strMyNumber, 0, 1)) + " сто ";
-    }
-    // Convert the tens and ones place.
-    if (MidStr(strMyNumber, 1, 1) != "0") {
-        Result = Result + GetTens(MidStr2(strMyNumber, 1));
-    } else {
-        Result = Result + GetDigit(MidStr2(strMyNumber, 2));
-    }
-    return Result;
-}
-// Converts a number from 10 to 99 into text.
-function GetTens(TensText) {
-    TensText = parseInt(TensText);
-    var digit0 = parseInt(TensText.toString().substr(1));
-    var digit1 = parseInt(TensText.toString().substr(0, 1));
-    var Result = "";
-    if (digit1 == 1) {
-        switch (TensText) {
-        case 10:
-            Result = "десять";
-            break;
-        case 11:
-            Result = "одинадцять";
-            break;
-        case 12:
-            Result = "дванадцять";
-            break;
-        case 13:
-            Result = "тринадцять";
-            break;
-        case 14:
-            Result = "чотирнадцять";
-            break;
-        case 15:
-            Result = "п'ятнадцять";
-            break;
-        case 16:
-            Result = "шіснадцять";
-            break;
-        case 17:
-            Result = "сімнадцять";
-            break;
-        case 18:
-            Result = "вісімнаднцять";
-            break;
-        case 19:
-            Result = "дев'ятнадцять";
-            break;
+        function decimals_parser(_num) {
+                var _first_num = _num.substr(0, 1);
+                var _second_num = parseFloat(_num.substr(1, 2));
+                var _string = ' ' + _first_num + _second_num;
+                if (_second_num == 1) _string += ' цент';
+                else if (_second_num > 1 && _second_num < 5) _string += ' центи';
+                else _string += ' центів';
+                return _string;
         }
-    } else {
-        switch (digit1) {
-        case 2:
-            Result = "двадцять ";
-            break;
-        case 3:
-            Result = "тридцять ";
-            break;
-        case 4:
-            Result = "сорок ";
-            break;
-        case 5:
-            Result = "п'ятдесят ";
-            break;
-        case 6:
-            Result = "шістдесят ";
-            break;
-        case 7:
-            Result = "сімдесят ";
-            break;
-        case 8:
-            Result = "вісімдесят ";
-            break;
-        case 9:
-            Result = "дев'яносто' ";
-            break;
+        if (!_number || _number == 0) return false;
+        if (typeof _number !== 'number') {
+                _number = _number.replace(',', '.');
+                _number = parseFloat(_number);
+                if (isNaN(_number)) return false;
         }
-        Result = Result + GetDigit(digit0);
-    }
-    return Result;
-}
-// Converts a number from 1 to 9 into text.
-function GetDigit(Digit) {
-    Digit = parseInt(Digit);
-    switch (Digit) {
-    case 1:
-        return "один";
-    case 2:
-        return "два";
-    case 3:
-        return "три";
-    case 4:
-        return "чотири";
-    case 5:
-        return "п'ять";
-    case 6:
-        return "шість";
-    case 7:
-        return "сім";
-    case 8:
-        return "вісім";
-    case 9:
-        return "дев'ять";
-    default:
-        return "";
-    }
-}
-function Left(str, n) {
-    if (n <= 0) return "";
-    else if (n > String(str).length) return str;
-    else return String(str).toString().substr(0, n);
-}
-function Right(str, n) {
-    if (n <= 0) return "";
-    else if (n > str.toString().length) return str;
-    else {
-        var iLen = str.toString().length;
-        return str.toString().substr(iLen - n, n);
-    }
-}
-function MidStr2(strInput, intStart) {
-    return String(strInput).toString().substr(intStart, strInput.toString().length);
-}
-function MidStr(strInput, intStart, intLength) {
-    return String(strInput).toString().substr(intStart, intLength);
-}
-function InStr(myText, str) {
-    return myText.toString().indexOf(str);
+        _number = _number.toFixed(2);
+        if(_number.indexOf('.') != -1) {
+                var _number_arr = _number.split('.');
+                var _number = _number_arr[0];
+                var _number_decimals = _number_arr[1];
+        }
+        var _number_length = _number.length;
+        var _string = '';
+        var _num_parser = '';
+        var _count = 0;
+        for (var _p = (_number_length - 1); _p >= 0; _p--) {
+                var _num_digit = _number.substr(_p, 1);
+                _num_parser = _num_digit +  _num_parser;
+                if ((_num_parser.length == 3 || _p == 0) && !isNaN(parseFloat(_num_parser))) {
+                        _string = number_parser(_num_parser, _count) + _string;
+                        _num_parser = '';
+                        _count++;
+                }
+        }
+        if (_number_decimals) _string += decimals_parser(_number_decimals);
+        return _string;
 }
